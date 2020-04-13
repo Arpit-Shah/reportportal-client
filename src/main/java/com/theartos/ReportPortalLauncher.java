@@ -12,7 +12,6 @@ import com.epam.ta.reportportal.ws.model.FinishTestItemRQ;
 import com.epam.ta.reportportal.ws.model.StartTestItemRQ;
 import com.epam.ta.reportportal.ws.model.launch.Mode;
 import com.epam.ta.reportportal.ws.model.launch.StartLaunchRQ;
-import com.theartos.ReportPortalLauncher.Status;
 
 import io.reactivex.Maybe;
 
@@ -45,13 +44,8 @@ public class ReportPortalLauncher {
 	private static Status oStatus;
 	private static LogStatus oLogStatus;
 
-	public Maybe<String> getLaucnId() {
-		return launchUUID;
-
-	}
-
 	public static enum Status {
-		Failed, STOPPED, SKIPPED, RESTED, CANCELLED, PASSED
+		FAILED, STOPPED, SKIPPED, RESTED, CANCELLED, PASSED
 	}
 
 	public static enum LogStatus {
@@ -209,20 +203,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeSuite(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("BEFORE_SUITE");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartBeforeSuiteUUID = launch.startTestItem(st);
+		StartBeforeSuiteUUID = startItem("BEFORE_SUITE", Name, Description);
 		return StartBeforeSuiteUUID;
 	}
 
@@ -241,10 +222,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endBeforeSuite(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		ftc.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(StartBeforeSuiteUUID, ftc);
+		printUUID(StartBeforeSuiteUUID, "Ending StartBeforeSuiteUUID");
+		endItem(StartBeforeSuiteUUID, Status);
 	}
 
 	// ********************************************
@@ -275,20 +254,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterSuite(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("AFTER_SUITE");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartAfterSuiteUUID = launch.startTestItem(st);
+		StartAfterSuiteUUID = startItem("AFTER_SUITE", Name, Description);
 		return StartAfterSuiteUUID;
 	}
 
@@ -307,10 +273,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endAfterSuite(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		ftc.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(StartAfterSuiteUUID, ftc);
+		printUUID(StartAfterSuiteUUID, "Ending StartAfterSuiteUUID");
+		endItem(StartAfterSuiteUUID, Status);
 	}
 
 	// ********************************************
@@ -341,20 +305,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeTest(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("BEFORE_TEST");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartBeforeTestUUID = launch.startTestItem(st);
+		StartBeforeTestUUID = startItem("BEFORE_TEST", Name, Description);
 		return StartBeforeTestUUID;
 	}
 
@@ -373,10 +324,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endBeforeTest(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		ftc.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(StartBeforeTestUUID, ftc);
+		printUUID(StartBeforeTestUUID, "Ending StartBeforeTestUUID");
+		endItem(StartBeforeTestUUID, Status);
 	}
 
 	// ********************************************
@@ -407,20 +356,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterTest(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("AFTER_TEST");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartAfterTestUUID = launch.startTestItem(st);
+		StartAfterTestUUID = startItem("AFTER_TEST", Name, Description);
 		return StartAfterTestUUID;
 	}
 
@@ -439,10 +375,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endAfterTest(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		ftc.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(StartAfterTestUUID, ftc);
+		printUUID(StartAfterTestUUID, "Ending StartAfterTestUUID");
+		endItem(StartAfterTestUUID, Status);
 	}
 
 	// ********************************************
@@ -473,20 +407,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeMethod(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("BEFORE_METHOD");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartBeforeMethodUUID = launch.startTestItem(st);
+		StartBeforeMethodUUID = startItem("BEFORE_METHOD", Name, Description);
 		return StartBeforeMethodUUID;
 	}
 
@@ -505,9 +426,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endBeforeMethod(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		launch.finishTestItem(StartBeforeMethodUUID, ftc);
+		printUUID(StartBeforeMethodUUID, "Ending StartBeforeMethodUUID");
+		endItem(StartBeforeMethodUUID, Status);
 	}
 
 	// ********************************************
@@ -538,20 +458,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterMethod(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("AFTER_METHOD");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		StartAfterMethodUUID = launch.startTestItem(st);
+		StartAfterMethodUUID = startItem("AFTER_METHOD", Name, Description);
 		return StartAfterMethodUUID;
 	}
 
@@ -569,10 +476,9 @@ public class ReportPortalLauncher {
 	 * </PRE>
 	 * 
 	 */
-	public void endAfterMethod() {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		launch.finishTestItem(StartAfterMethodUUID, ftc);
+	public void endAfterMethod(Status Status) {
+		printUUID(StartAfterMethodUUID, "Ending StartAfterMethodUUID");
+		endItem(StartAfterMethodUUID, Status);
 	}
 
 	// ********************************************
@@ -603,21 +509,7 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartSuite(String Name, String Description) {
-
-		StartTestItemRQ st = new StartTestItemRQ();
-
-		st.setDescription(Description);
-		st.setName(Name);
-		st.setStartTime(Calendar.getInstance().getTime());
-		st.setRetry(false);
-		st.setType("SUITE");
-
-		if (suiteTags != null) {
-			st.setTags(suiteTags);
-		}
-
-		SuiteUUID = launch.startTestItem(st);
-
+		SuiteUUID = startItem("SUITE", Name, Description);
 		return SuiteUUID;
 	}
 
@@ -636,16 +528,13 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endSuite() {
-		FinishTestItemRQ ft = new FinishTestItemRQ();
-		ft.setEndTime(Calendar.getInstance().getTime());
-		launch.finishTestItem(SuiteUUID, ft);
+		printUUID(SuiteUUID, "Ending SuiteUUID");
+		endItem(SuiteUUID, null);
 	}
 
 	public void endSuite(Status Status) {
-		FinishTestItemRQ ft = new FinishTestItemRQ();
-		ft.setEndTime(Calendar.getInstance().getTime());
-		ft.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(SuiteUUID, ft);
+		printUUID(SuiteUUID, "Ending SuiteUUID");
+		endItem(SuiteUUID, Status);
 	}
 
 	// ********************************************
@@ -675,21 +564,8 @@ public class ReportPortalLauncher {
 	 * @return = UUID of created Suite
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartTest(String Name, String Desc) {
-
-		StartTestItemRQ testcase = new StartTestItemRQ();
-
-		testcase.setDescription(Desc);
-		testcase.setName(Name);
-		testcase.setStartTime(Calendar.getInstance().getTime());
-		testcase.setRetry(false);
-		testcase.setType("TEST");
-
-		if (testTags != null) {
-			testcase.setTags(testTags);
-		}
-
-		testUUID = launch.startTestItem(SuiteUUID, testcase);
+	public Maybe<String> StartTest(String Name, String Description) {
+		testUUID = startItem("TEST", Name, Description);
 		return testUUID;
 	}
 
@@ -708,10 +584,8 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endTest(Status Status) {
-		FinishTestItemRQ ftc = new FinishTestItemRQ();
-		ftc.setEndTime(Calendar.getInstance().getTime());
-		ftc.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(testUUID, ftc);
+		printUUID(testUUID, "Ending testUUID");
+		endItem(testUUID, Status);
 	}
 
 	// ********************************************
@@ -742,22 +616,8 @@ public class ReportPortalLauncher {
 	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartStep(String Name, String Description) {
-
-		StartTestItemRQ step = new StartTestItemRQ();
-
-		step.setDescription(Description);
-		step.setName(Name);
-		step.setStartTime(Calendar.getInstance().getTime());
-		step.setRetry(false);
-		step.setType("STEP");
-
-		if (stepTags != null) {
-			step.setTags(stepTags);
-		}
-
-		stepUUID = launch.startTestItem(testUUID, step);
+		stepUUID = startItem("STEP", Name, Description);
 		return stepUUID;
-
 	}
 
 	// ********************************************
@@ -775,12 +635,10 @@ public class ReportPortalLauncher {
 	 * 
 	 */
 	public void endStep(Status Status) {
-		FinishTestItemRQ ftep = new FinishTestItemRQ();
-		ftep.setEndTime(Calendar.getInstance().getTime());
-		ftep.setStatus(ConvertSStatus(Status));
-		launch.finishTestItem(stepUUID, ftep);
+		printUUID(stepUUID, "Ending stepUUID");
+		endItem(stepUUID, Status);
 	}
-	
+
 	public void endStep(String Description, Status Status) {
 		FinishTestItemRQ ftep = new FinishTestItemRQ();
 		ftep.setEndTime(Calendar.getInstance().getTime());
@@ -803,7 +661,6 @@ public class ReportPortalLauncher {
 			return "INFO";
 		case Error:
 			return "ERROR";
-
 		case Warn:
 			return "WARN";
 		case Fatal:
@@ -819,7 +676,7 @@ public class ReportPortalLauncher {
 		switch (S) {
 		case PASSED:
 			return "PASSED";
-		case Failed:
+		case FAILED:
 			return "FAILED";
 		case SKIPPED:
 			return "SKIPPED";
@@ -845,55 +702,51 @@ public class ReportPortalLauncher {
 		SuiteUUID = launch.startTestItem(esid, st);
 		return SuiteUUID;
 	}
-//
-//	public Maybe<String> startItem(String item, String Name, String Description) {
-//		StartTestItemRQ step = new StartTestItemRQ();
-//		step.setDescription(Description);
-//		step.setName(Name);
-//		step.setStartTime(Calendar.getInstance().getTime());
-//		step.setRetry(false);
-//		step.setType(item);
-//		itemid = launch.startTestItem(testUUID, step); // under test
-//		return itemid;
-//	}
-//
-//	public Maybe<String> startItem(boolean test, String item, String Name, String Description) {
-//		StartTestItemRQ step = new StartTestItemRQ();
-//		step.setDescription(Description);
-//		step.setName(Name);
-//		step.setStartTime(Calendar.getInstance().getTime());
-//		step.setRetry(false);
-//		step.setType(item);
-//
-//		if (test)
-//			itemid = launch.startTestItem(launchUUID, step); // suite level under launch
-//		else
-//			itemid = launch.startTestItem(SuiteUUID, step); // under suite
-//		return itemid;
-//	}
-//
-//	public void endItem(Status Status) {
-//		FinishTestItemRQ ftep = new FinishTestItemRQ();
-//		ftep.setEndTime(Calendar.getInstance().getTime());
-//		if (Status != null)
-//			ftep.setStatus(ConvertSStatus(Status));
-//
-//		launch.finishTestItem(itemid, ftep);
-//
-//	}
-//
-//	public void endItem(String Description, Status Status) {
-//		FinishTestItemRQ ftep = new FinishTestItemRQ();
-//		ftep.setEndTime(Calendar.getInstance().getTime());
-//		ftep.setDescription(Description);
-//
-//		if (Status != null)
-//			ftep.setStatus(ConvertSStatus(Status));
-//
-//		launch.finishTestItem(itemid, ftep);
-//
-//	}
-	
+
+	public Maybe<String> startItem(String item, String Name, String Description) {
+
+		StartTestItemRQ st = new StartTestItemRQ();
+		st.setDescription(Description);
+		st.setName(Name);
+		st.setStartTime(Calendar.getInstance().getTime());
+		st.setRetry(false);
+		st.setType(item);
+		
+		// Suite => BeforeSuite + AfterSuite + Test(s)
+		// Test => BeforeTest + AfterTest + Step(s)
+		// Step => BeforeMethod + AfterMethod
+		if ("SUITE".equals(item)) {
+			itemid = launch.startTestItem(st);
+		} else if ("BEFORE_SUITE".equals(item)) {
+			itemid = launch.startTestItem(SuiteUUID, st);
+		} else if ("AFTER_SUITE".equals(item)) {
+			itemid = launch.startTestItem(SuiteUUID, st);
+		} else if ("TEST".equals(item)) {
+			itemid = launch.startTestItem(SuiteUUID, st);
+		} else if ("STEP".equals(item)) {
+			itemid = launch.startTestItem(testUUID, st);
+		} else if ("BEFORE_TEST".equals(item)) {
+			itemid = launch.startTestItem(testUUID, st);
+		} else if ("AFTER_TEST".equals(item)) {
+			itemid = launch.startTestItem(testUUID, st);
+		} else if ("BEFORE_METHOD".equals(item)) {
+			itemid = launch.startTestItem(stepUUID, st);
+		} else if ("AFTER_METHOD".equals(item)) {
+			itemid = launch.startTestItem(stepUUID, st);
+		}
+		return itemid;
+	}
+
+	public void endItem(Maybe<String> itemUUID, Status Status) {
+		FinishTestItemRQ ftep = new FinishTestItemRQ();
+		ftep.setEndTime(Calendar.getInstance().getTime());
+		if (Status != null) {
+			ftep.setStatus(ConvertSStatus(Status));
+		}
+		launch.finishTestItem(itemUUID, ftep);
+
+	}
+
 	public Status getStatus() {
 		return oStatus;
 	}
@@ -908,5 +761,69 @@ public class ReportPortalLauncher {
 
 	public void setTags(Set<String> s) {
 		this.Tags = s;
+	}
+
+	public Maybe<String> getStartBeforeSuiteUUID() {
+		StartBeforeSuiteUUID.subscribe(s -> System.out.print("StartBeforeSuiteUUID : " + s));
+		return StartBeforeSuiteUUID;
+	}
+
+	public Maybe<String> getStartAfterSuiteUUID() {
+		StartAfterSuiteUUID.subscribe(s -> System.out.print("StartAfterSuiteUUID : " + s));
+		return StartAfterSuiteUUID;
+	}
+
+	public Maybe<String> getStartBeforeTestUUID() {
+		StartBeforeTestUUID.subscribe(s -> System.out.print("StartBeforeTestUUID : " + s));
+		return StartBeforeTestUUID;
+	}
+
+	public Maybe<String> getStartAfterTestUUID() {
+		StartAfterTestUUID.subscribe(s -> System.out.print("StartAfterTestUUID : " + s));
+		return StartAfterTestUUID;
+	}
+
+	public Maybe<String> getStartBeforeMethodUUID() {
+		StartBeforeMethodUUID.subscribe(s -> System.out.print("StartBeforeMethodUUID : " + s));
+		return StartBeforeMethodUUID;
+	}
+
+	public Maybe<String> getStartAfterMethodUUID() {
+		StartAfterMethodUUID.subscribe(s -> System.out.print("StartAfterMethodUUID : " + s));
+		return StartAfterMethodUUID;
+	}
+
+	public String getuUID() {
+		System.out.print(uUID);
+		return uUID;
+	}
+
+	public Maybe<String> getLaunchUUID() {
+		launchUUID.subscribe(s -> System.out.print("LaunchUUID : " + s));
+		return launchUUID;
+	}
+
+	public Maybe<String> getSuiteUUID() {
+		SuiteUUID.subscribe(s -> System.out.print("SuiteUUID : " + s));
+		return SuiteUUID;
+	}
+
+	public Maybe<String> getTestUUID() {
+		testUUID.subscribe(s -> System.out.print("TestUUID : " + s));
+		return testUUID;
+	}
+
+	public Maybe<String> getStepUUID() {
+		stepUUID.subscribe(s -> System.out.print("StepUUID : " + s));
+		return stepUUID;
+	}
+
+	public void printUUID(Maybe<String> uuid, String description) {
+		uuid.subscribe(s -> System.out.print(description + " : " + s));
+	}
+
+	public Maybe<String> getLaucnId() {
+		launchUUID.subscribe(s -> System.out.print("launchUUID : " + s));
+		return launchUUID;
 	}
 }

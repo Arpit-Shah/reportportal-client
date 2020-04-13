@@ -15,6 +15,13 @@ import com.epam.ta.reportportal.ws.model.launch.StartLaunchRQ;
 
 import io.reactivex.Maybe;
 
+/**
+ * This class implements API required to talk to ReportPortal
+ * https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/reporting.md
+ * 
+ * @author ArpitS
+ *
+ */
 public class ReportPortalLauncher {
 
 	public String projectName = "";
@@ -53,13 +60,15 @@ public class ReportPortalLauncher {
 	}
 
 	/**
+	 * Constructor
 	 * 
 	 * @param launchName  = Name of launch (Example: AutomationRun)
-	 * @param projectName
-	 * @param releaseName
+	 * @param projectName = Same name as launch name created in Report Portal IO
+	 *                    website
+	 * @param releaseName = Release Name
 	 * @param uUID        = Launch uuid (string identificator) (Example :
 	 *                    69dc75cd-4522-44b9-9015-7685ec0e1abb)
-	 * @param sURL
+	 * @param sURL        = Base URL
 	 */
 	public ReportPortalLauncher(final String launchName, final String projectName, final String releaseName,
 			final String uUID, final String sURL) {
@@ -74,8 +83,7 @@ public class ReportPortalLauncher {
 	// START LAUNCH
 	// ********************************************
 	/**
-	 * Populate information which is needed to start a launch
-	 * https://github.com/reportportal/documentation/blob/master/src/md/src/DevGuides/reporting.md
+	 * Starts the client connection between ReportPortal and test system
 	 * 
 	 * <PRE>
 	 * REQUEST
@@ -167,11 +175,11 @@ public class ReportPortalLauncher {
 		launch.finish(fq);
 	}
 
-	public void endLaunch(Status Status) {
+	public void endLaunch(Status status) {
 
 		FinishExecutionRQ fq = new FinishExecutionRQ();
 		fq.setEndTime(Calendar.getInstance().getTime());
-		fq.setStatus(ConvertSStatus(Status));
+		fq.setStatus(ConvertSStatus(status));
 		launch.finish(fq);
 	}
 
@@ -199,8 +207,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Suite Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeSuite(String Name, String Description) {
 		StartBeforeSuiteUUID = startItem("BEFORE_SUITE", Name, Description);
@@ -220,10 +227,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endBeforeSuite(Status Status) {
+	public void endBeforeSuite(Status status) {
 		printUUID(StartBeforeSuiteUUID, "Ending StartBeforeSuiteUUID");
-		endItem(StartBeforeSuiteUUID, Status);
+		endItem(StartBeforeSuiteUUID, status);
 	}
 
 	// ********************************************
@@ -250,8 +258,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Suite Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterSuite(String Name, String Description) {
 		StartAfterSuiteUUID = startItem("AFTER_SUITE", Name, Description);
@@ -271,10 +278,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endAfterSuite(Status Status) {
+	public void endAfterSuite(Status status) {
 		printUUID(StartAfterSuiteUUID, "Ending StartAfterSuiteUUID");
-		endItem(StartAfterSuiteUUID, Status);
+		endItem(StartAfterSuiteUUID, status);
 	}
 
 	// ********************************************
@@ -301,8 +309,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeTest(String Name, String Description) {
 		StartBeforeTestUUID = startItem("BEFORE_TEST", Name, Description);
@@ -322,10 +329,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endBeforeTest(Status Status) {
+	public void endBeforeTest(Status status) {
 		printUUID(StartBeforeTestUUID, "Ending StartBeforeTestUUID");
-		endItem(StartBeforeTestUUID, Status);
+		endItem(StartBeforeTestUUID, status);
 	}
 
 	// ********************************************
@@ -352,8 +360,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterTest(String Name, String Description) {
 		StartAfterTestUUID = startItem("AFTER_TEST", Name, Description);
@@ -373,10 +380,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endAfterTest(Status Status) {
+	public void endAfterTest(Status status) {
 		printUUID(StartAfterTestUUID, "Ending StartAfterTestUUID");
-		endItem(StartAfterTestUUID, Status);
+		endItem(StartAfterTestUUID, status);
 	}
 
 	// ********************************************
@@ -403,8 +411,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Method Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartBeforeMethod(String Name, String Description) {
 		StartBeforeMethodUUID = startItem("BEFORE_METHOD", Name, Description);
@@ -424,10 +431,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endBeforeMethod(Status Status) {
+	public void endBeforeMethod(Status status) {
 		printUUID(StartBeforeMethodUUID, "Ending StartBeforeMethodUUID");
-		endItem(StartBeforeMethodUUID, Status);
+		endItem(StartBeforeMethodUUID, status);
 	}
 
 	// ********************************************
@@ -454,8 +462,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Method Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartAfterMethod(String Name, String Description) {
 		StartAfterMethodUUID = startItem("AFTER_METHOD", Name, Description);
@@ -475,10 +482,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endAfterMethod(Status Status) {
+	public void endAfterMethod(Status status) {
 		printUUID(StartAfterMethodUUID, "Ending StartAfterMethodUUID");
-		endItem(StartAfterMethodUUID, Status);
+		endItem(StartAfterMethodUUID, status);
 	}
 
 	// ********************************************
@@ -505,8 +513,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Suite Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartSuite(String Name, String Description) {
 		SuiteUUID = startItem("SUITE", Name, Description);
@@ -532,9 +539,21 @@ public class ReportPortalLauncher {
 		endItem(SuiteUUID, null);
 	}
 
-	public void endSuite(Status Status) {
+	/**
+	 * End Suite
+	 * 
+	 * <PRE>
+	 * {
+	 *  "endTime": "1574423247000",
+	 *  "launchUuid": "96d1bc02-6a3f-451e-b706-719149d51ce4"
+	 * }
+	 * </PRE>
+	 * 
+	 * @param status = Result Status
+	 */
+	public void endSuite(Status status) {
 		printUUID(SuiteUUID, "Ending SuiteUUID");
-		endItem(SuiteUUID, Status);
+		endItem(SuiteUUID, status);
 	}
 
 	// ********************************************
@@ -561,8 +580,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Suite Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartTest(String Name, String Description) {
 		testUUID = startItem("TEST", Name, Description);
@@ -582,10 +600,11 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endTest(Status Status) {
+	public void endTest(Status status) {
 		printUUID(testUUID, "Ending testUUID");
-		endItem(testUUID, Status);
+		endItem(testUUID, status);
 	}
 
 	// ********************************************
@@ -612,8 +631,7 @@ public class ReportPortalLauncher {
 	 * 
 	 * @param Name        = Test Suite Name
 	 * @param Description = Suite Description
-	 * @return = UUID of created Suite
-	 *         (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
 	public Maybe<String> StartStep(String Name, String Description) {
 		stepUUID = startItem("STEP", Name, Description);
@@ -633,16 +651,17 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param status = Result Status
 	 */
-	public void endStep(Status Status) {
+	public void endStep(Status status) {
 		printUUID(stepUUID, "Ending stepUUID");
-		endItem(stepUUID, Status);
+		endItem(stepUUID, status);
 	}
 
-	public void endStep(String Description, Status Status) {
+	public void endStep(String Description, Status status) {
 		FinishTestItemRQ ftep = new FinishTestItemRQ();
 		ftep.setEndTime(Calendar.getInstance().getTime());
-		ftep.setStatus(ConvertSStatus(Status));
+		ftep.setStatus(ConvertSStatus(status));
 		ftep.setDescription(Description);
 		launch.finishTestItem(stepUUID, ftep);
 	}
@@ -672,8 +691,14 @@ public class ReportPortalLauncher {
 		}
 	}
 
-	private String ConvertSStatus(Status S) {
-		switch (S) {
+	/**
+	 * Convert Enum to String
+	 * 
+	 * @param status = Item Status
+	 * @return = String value of the status
+	 */
+	private String ConvertSStatus(Status status) {
+		switch (status) {
 		case PASSED:
 			return "PASSED";
 		case FAILED:
@@ -703,6 +728,23 @@ public class ReportPortalLauncher {
 		return SuiteUUID;
 	}
 
+	/**
+	 * Creates Item on demand with fix hierarchy as shown below
+	 * 
+	 * <PRE>
+	 * Suite = BeforeSuite + AfterSuite + Test(s)
+	 * Test = BeforeTest + AfterTest + Step(s)
+	 * Step = BeforeMethod + AfterMethod
+	 * </PRE>
+	 * 
+	 * @param item        = One of the following option ("SUITE, STORY, TEST,
+	 *                    SCENARIO, STEP, BEFORE_CLASS, BEFORE_GROUPS," +
+	 *                    "BEFORE_METHOD, BEFORE_SUITE, BEFORE_TEST, AFTER_CLASS,
+	 *                    AFTER_GROUPS, AFTER_METHOD, AFTER_SUITE, AFTER_TEST")
+	 * @param Name        = Name of the item
+	 * @param Description = Description of the item
+	 * @return = Item UUID
+	 */
 	public Maybe<String> startItem(String item, String Name, String Description) {
 
 		StartTestItemRQ st = new StartTestItemRQ();
@@ -711,7 +753,7 @@ public class ReportPortalLauncher {
 		st.setStartTime(Calendar.getInstance().getTime());
 		st.setRetry(false);
 		st.setType(item);
-		
+
 		// Suite => BeforeSuite + AfterSuite + Test(s)
 		// Test => BeforeTest + AfterTest + Step(s)
 		// Step => BeforeMethod + AfterMethod
@@ -737,11 +779,17 @@ public class ReportPortalLauncher {
 		return itemid;
 	}
 
-	public void endItem(Maybe<String> itemUUID, Status Status) {
+	/**
+	 * Ends specified item
+	 * 
+	 * @param itemUUID = Item UUID that needs to be ended
+	 * @param status   = Status update if required
+	 */
+	public void endItem(Maybe<String> itemUUID, Status status) {
 		FinishTestItemRQ ftep = new FinishTestItemRQ();
 		ftep.setEndTime(Calendar.getInstance().getTime());
-		if (Status != null) {
-			ftep.setStatus(ConvertSStatus(Status));
+		if (status != null) {
+			ftep.setStatus(ConvertSStatus(status));
 		}
 		launch.finishTestItem(itemUUID, ftep);
 

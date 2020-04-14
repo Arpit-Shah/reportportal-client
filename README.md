@@ -1,8 +1,11 @@
 # HOW TO USE ReportPortal-Client for ARTOS project
 
 Step 1 : Check out this project
+
 Step 2 : Using maven -install command, build project into jar file. Once produce you will see "reportportal-client-0.0.1-SNAPSHOT.jar" is created in ./target directory of the project
+
 Step 3 : Copy "reportportal-client-0.0.1-SNAPSHOT.jar" into lib directory of Artos test project
+
 Step 4 : Add jar to your build path. If you are using maven project then add following to your POM.xml file. 
 
 ```xml
@@ -14,6 +17,7 @@ Step 4 : Add jar to your build path. If you are using maven project then add fol
             <systemPath>${project.basedir}/lib/reportportal-client-0.0.1-SNAPSHOT.jar</systemPath>
 </dependency>
 ```
+
 Step 5 : Create "reportportal_configuration.xml" file to project ./conf/ directory. Add following info into xml file and update to match your Report Portal configuration. 
 
 ```xml

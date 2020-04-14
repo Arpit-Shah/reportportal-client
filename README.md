@@ -1,17 +1,28 @@
-# reportportal-client
+# Report Portal Client Usage Example
+
+## Add reportportal_configuration.xml file to location ./conf/
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+  <reportportal_info>
+    <property name="Project_Name">MOORTHIR_PERSONAL</property>
+    <property name="TestSuite_Name">ARTOS_TESTSUITE_1</property>
+    <property name="Release_Name">01.02.0002</property>
+    <property name="Base_URL">http://192.168.1.23:8080</property>
+    <property name="UUID">0abb483c-37f2-4abd-a029-3c7facfa7b7c</property>
+  </reportportal_info>
+</configuration>
+
+```
 
 ```java
 public class Test {
 
 	public static void main(String[] args) {
-		String launchName = "Trial Test";
-		String projectName = "REPORTPORTAL_PROJECT_NAME";
-		String releaseName = "01.01.0001";
-		String uUID = "0dfb483c-3342-4abd-c02a-3c7fac017b7a";
-		String sURL = "http://58.22.3.234:8080";
-		ReportPortalLauncher rl = new ReportPortalLauncher(launchName, projectName, releaseName, uUID, sURL);
+		ReportPortalLauncher rl = new ReportPortalLauncher();
 
-		// Launch is mendatory
+		// Launch is mandatory
 		rl.StartLaunch();
 
 		// Test Suite can have only one instance per run
@@ -31,6 +42,9 @@ public class Test {
 		rl.StartStep("TestStep 1", "Start of the Test Step 1");
 		// Execute BeforeMethod once Test Step object is constructed
 		rl.StartBeforeMethod("BeforeMethod", "Unit Before Test Test Execution");
+		// log something
+		rl.log(LogStatus.Debug, "This is log line 1");
+		rl.log(LogStatus.Debug, "This is log line 2");
 		rl.endBeforeMethod(Status.PASSED);
 		// Execute AfterMethod before Test Step object is ended
 		rl.StartAfterMethod("AfterMethod", "Unit Before Test Test Execution");
@@ -60,7 +74,7 @@ public class Test {
 		rl.endSuite();
 
 		rl.endLaunch();
-		
+
 	}
 }
 ```

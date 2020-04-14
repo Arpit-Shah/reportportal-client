@@ -41,7 +41,7 @@ public class ReportPortalLauncher {
 	private Maybe<String> testUUID;
 	private Maybe<String> stepUUID;
 	private Maybe<String> itemid;
-	String launchName;
+	String testSuiteName;
 	public Set<String> Tags;
 	public Set<String> stepTags;
 	public Set<String> testTags;
@@ -60,23 +60,55 @@ public class ReportPortalLauncher {
 	}
 
 	/**
-	 * Constructor
+	 * Convert Enum to String
 	 * 
-	 * @param launchName  = Name of launch (Example: AutomationRun)
-	 * @param projectName = Same name as launch name created in Report Portal IO
-	 *                    website
-	 * @param releaseName = Release Name
-	 * @param uUID        = Launch uuid (string identificator) (Example :
-	 *                    69dc75cd-4522-44b9-9015-7685ec0e1abb)
-	 * @param sURL        = Base URL
+	 * @param status = Log Status
+	 * @return = String value of the status
 	 */
-	public ReportPortalLauncher(final String launchName, final String projectName, final String releaseName,
-			final String uUID, final String sURL) {
-		this.projectName = projectName;
-		this.releaseName = releaseName;
-		this.uUID = uUID;
-		this.baseURL = sURL;
-		this.launchName = launchName;
+	private String ConvertStatus(LogStatus logStatus) {
+		switch (logStatus) {
+		case Info:
+			return "INFO";
+		case Error:
+			return "ERROR";
+		case Warn:
+			return "WARN";
+		case Fatal:
+			return "FATAL";
+		case Debug:
+			return "DEBUG";
+		default:
+			return "INFO";
+		}
+	}
+
+	/**
+	 * Convert Enum to String
+	 * 
+	 * @param status = Item Status
+	 * @return = String value of the status
+	 */
+	private String ConvertSStatus(Status status) {
+		switch (status) {
+		case PASSED:
+			return "PASSED";
+		case FAILED:
+			return "FAILED";
+		case SKIPPED:
+			return "SKIPPED";
+
+		default:
+			return "PASSED";
+		}
+	}
+
+	public ReportPortalLauncher() {
+		ReportPortalConfigParser parser = new ReportPortalConfigParser(true);
+		this.projectName = parser.getProject_Name();
+		this.testSuiteName = parser.getTestSuite_Name();
+		this.releaseName = parser.getRelease_Name();
+		this.uUID = parser.getUUID();
+		this.baseURL = parser.getBase_URL();
 	}
 
 	// ********************************************
@@ -119,9 +151,9 @@ public class ReportPortalLauncher {
 		{
 			params.setBaseUrl(baseURL.trim());
 			params.setUuid(uUID.trim());
-			params.setLaunchName(launchName);
+			params.setLaunchName(testSuiteName);
 			params.setProjectName(projectName);
-			params.setDescription(launchName + " FOR " + projectName);
+			params.setDescription(testSuiteName + " FOR " + projectName);
 			params.setLaunchRunningMode(Mode.DEFAULT);
 			// Do not allow re-run
 			params.setRerun(false);
@@ -666,49 +698,29 @@ public class ReportPortalLauncher {
 		launch.finishTestItem(stepUUID, ftep);
 	}
 
-	public void log(String message, LogStatus status) {
-		ReportPortal.emitLog(message, ConvertStatus(status), Calendar.getInstance().getTime());
-	}
-
-	public void log(String message, LogStatus status, File f) {
-		ReportPortal.emitLog(message, ConvertStatus(status), Calendar.getInstance().getTime(), f);
-	}
-
-	private String ConvertStatus(LogStatus S) {
-		switch (S) {
-		case Info:
-			return "INFO";
-		case Error:
-			return "ERROR";
-		case Warn:
-			return "WARN";
-		case Fatal:
-			return "FATAL";
-		case Debug:
-			return "DEBUG";
-		default:
-			return "INFO";
-		}
+	/**
+	 * Log lines can only be added for active component. For Example: If Test has
+	 * steps inside then logs can only be added to the steps, If Test does not have
+	 * steps then logs can only be added to tests
+	 * 
+	 * @param logStatus = LogStatus
+	 * @param message   = Log Message
+	 */
+	public void log(LogStatus logStatus, String message) {
+		ReportPortal.emitLog(message, ConvertStatus(logStatus), Calendar.getInstance().getTime());
 	}
 
 	/**
-	 * Convert Enum to String
+	 * Log lines can only be added for active component. For Example: If Test has
+	 * steps inside then logs can only be added to the steps, If Test does not have
+	 * steps then logs can only be added to tests
 	 * 
-	 * @param status = Item Status
-	 * @return = String value of the status
+	 * @param logStatus = LogStatus
+	 * @param message   = Log Message
+	 * @param f         = log file
 	 */
-	private String ConvertSStatus(Status status) {
-		switch (status) {
-		case PASSED:
-			return "PASSED";
-		case FAILED:
-			return "FAILED";
-		case SKIPPED:
-			return "SKIPPED";
-
-		default:
-			return "PASSED";
-		}
+	public void log(String message, LogStatus status, File f) {
+		ReportPortal.emitLog(message, ConvertStatus(status), Calendar.getInstance().getTime(), f);
 	}
 
 	public Maybe<String> ReStartLaunch(Maybe<String> elid) {
@@ -792,8 +804,11 @@ public class ReportPortalLauncher {
 			ftep.setStatus(ConvertSStatus(status));
 		}
 		launch.finishTestItem(itemUUID, ftep);
-
 	}
+
+	// =====================================================
+	// Getters and Setters
+	// =====================================================
 
 	public Status getStatus() {
 		return oStatus;

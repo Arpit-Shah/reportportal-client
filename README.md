@@ -1,12 +1,27 @@
-# Report Portal Client Usage Example
+# HOW TO USE ReportPortal-Client for ARTOS project
 
-## Add reportportal_configuration.xml file to location ./conf/
+Step 1 : Check out this project
+Step 2 : Using maven -install command, build project into jar file. Once produce you will see "reportportal-client-0.0.1-SNAPSHOT.jar" is created in ./target directory of the project
+Step 3 : Copy "reportportal-client-0.0.1-SNAPSHOT.jar" into lib directory of Artos test project
+Step 4 : Add jar to your build path. If you are using maven project then add following to your POM.xml file. 
 
 ```xml
+<dependency>
+            <groupId>com.theartos</groupId>
+            <artifactId>reportportal-client</artifactId>
+            <version>0.0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/reportportal-client-0.0.1-SNAPSHOT.jar</systemPath>
+</dependency>
+```
+Step 5 : Create "reportportal_configuration.xml" file to project ./conf/ directory. Add following info into xml file and update to match your Report Portal configuration. 
+
+```xml
+
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
   <reportportal_info>
-    <property name="Project_Name">MOORTHIR_PERSONAL</property>
+    <property name="Project_Name">PROJECT_NAME_IN_REPORT_PORTAL</property>
     <property name="TestSuite_Name">ARTOS_TESTSUITE_1</property>
     <property name="Release_Name">01.02.0002</property>
     <property name="Base_URL">http://192.168.1.23:8080</property>
@@ -16,73 +31,7 @@
 
 ```
 
-```java
-public class Test {
-
-	public static void main(String[] args) {
-		ReportPortalLauncher rpl = new ReportPortalLauncher();
-
-		// Launch is mandatory
-		rpl.StartLaunch();
-
-		// Test Suite can have only one instance per run
-		rpl.StartSuite("TestSuite", "Start of the Test Suite");
-
-		// Execute BeforeTestSuite once test suite is constructed
-		rpl.StartBeforeSuite("BeforeTestSuite", "Unit Before Test Suite");
-		rpl.endBeforeSuite(Status.PASSED);
-
-		Set<String> tags = new HashSet<String>();
-		tags.add("Group1");
-		tags.add("Group2");
-		// Construct Test Case
-		rpl.StartTest("TestStart", "Start of the Test Case", tags);
-
-		// Execute Before Test once Test case object is constructed
-		rpl.StartBeforeTest("BeforeTest", "Unit Before Test Test Execution");
-		rpl.endBeforeTest(Status.PASSED);
-
-		rpl.StartStep("TestStep 1", "Start of the Test Step 1", tags);
-		// Execute BeforeMethod once Test Step object is constructed
-		rpl.StartBeforeMethod("BeforeMethod", "Unit Before Test Test Execution");
-		// log something
-		rpl.log(LogStatus.Debug, "This is log line 1");
-		rpl.log(LogStatus.Debug, "This is log line 2");
-		rpl.endBeforeMethod(Status.PASSED);
-		// Execute AfterMethod before Test Step object is ended
-		rpl.StartAfterMethod("AfterMethod", "Unit Before Test Test Execution");
-		rpl.endAfterMethod(Status.PASSED);
-		rpl.endStep(Status.PASSED);
-
-		rpl.StartStep("TestStep 2", "Start of the Test Step 2", tags);
-		rpl.endStep(Status.FAILED);
-
-		rpl.StartStep("TestStep 3", "Start of the Test Step 3", tags);
-		rpl.endStep(Status.SKIPPED);
-
-		rpl.StartStep("TestStep 4", "Start of the Test Step 4", tags);
-		rpl.endStep(Status.PASSED);
-
-		// Execute After Test before ending the Test case object
-		rpl.StartAfterTest("AfterTest", "Unit After Test Test Execution");
-		rpl.endAfterTest(Status.PASSED);
-
-		// End Test Case
-		rpl.endTest(Status.FAILED);
-
-		// Execute BeforeTestSuite before test suite is ended
-		rpl.StartAfterSuite("AfterTestSuite", "Unit After Test Suite");
-		rpl.endAfterSuite(Status.PASSED);
-
-		rpl.endSuite();
-
-		rpl.endLaunch();
-
-	}
-}
-```
-
-# Sample Report Portal Listener for Artos
+Step 6 : Create Listener for Artos as shown below and add to your project
 
 ```java
 /*******************************************************************************
@@ -124,7 +73,7 @@ import com.theartos.ReportPortalLauncher;
 import com.theartos.ReportPortalLauncher.LogStatus;
 import com.theartos.ReportPortalLauncher.Status;
 
-public class ReportPortalListener4 implements TestProgress {
+public class ReportPortalListener implements TestProgress {
 
 	TestContext context;
 	ReportPortalLauncher rpl;
@@ -132,11 +81,11 @@ public class ReportPortalListener4 implements TestProgress {
 	boolean activeChildUnit = false;
 	processTestCase ptc;
 
-	public ReportPortalListener4() {
+	public ReportPortalListener() {
 
 	}
 
-	public ReportPortalListener4(TestContext context) {
+	public ReportPortalListener(TestContext context) {
 		this.context = context;
 	}
 
@@ -582,4 +531,90 @@ public class ReportPortalListener4 implements TestProgress {
 
 }
 
+```
+
+Step 7 : Register listener via FeatureRunner Class
+
+```java
+
+	public static void main(String[] args) throws Exception {
+		List<Class<?>> listners = Lists.newArrayList(ReportPortalListener.class);
+		Runner runner = new Runner(FeatureRunner.class, listners);
+		runner.setTestList(getTestList());
+		runner.setLoopCount(1);
+		runner.setTestGroupList(Lists.newArrayList("FAST", "SLOW"));
+		runner.setTestUnitGroupList(Lists.newArrayList("GOODPATH", "BADPATH"));
+		runner.run(args);
+	}
+	
+```
+
+Step 8 : Execute the test suite and monitor the update in Report Portal
+
+## Below is the Example code to test reportportal-client jar
+
+```java
+public class Test {
+
+	public static void main(String[] args) {
+		ReportPortalLauncher rpl = new ReportPortalLauncher();
+
+		// Launch is mandatory
+		rpl.StartLaunch();
+
+		// Test Suite can have only one instance per run
+		rpl.StartSuite("TestSuite", "Start of the Test Suite");
+
+		// Execute BeforeTestSuite once test suite is constructed
+		rpl.StartBeforeSuite("BeforeTestSuite", "Unit Before Test Suite");
+		rpl.endBeforeSuite(Status.PASSED);
+
+		Set<String> tags = new HashSet<String>();
+		tags.add("Group1");
+		tags.add("Group2");
+		// Construct Test Case
+		rpl.StartTest("TestStart", "Start of the Test Case", tags);
+
+		// Execute Before Test once Test case object is constructed
+		rpl.StartBeforeTest("BeforeTest", "Unit Before Test Test Execution");
+		rpl.endBeforeTest(Status.PASSED);
+
+		rpl.StartStep("TestStep 1", "Start of the Test Step 1", tags);
+		// Execute BeforeMethod once Test Step object is constructed
+		rpl.StartBeforeMethod("BeforeMethod", "Unit Before Test Test Execution");
+		// log something
+		rpl.log(LogStatus.Debug, "This is log line 1");
+		rpl.log(LogStatus.Debug, "This is log line 2");
+		rpl.endBeforeMethod(Status.PASSED);
+		// Execute AfterMethod before Test Step object is ended
+		rpl.StartAfterMethod("AfterMethod", "Unit Before Test Test Execution");
+		rpl.endAfterMethod(Status.PASSED);
+		rpl.endStep(Status.PASSED);
+
+		rpl.StartStep("TestStep 2", "Start of the Test Step 2", tags);
+		rpl.endStep(Status.FAILED);
+
+		rpl.StartStep("TestStep 3", "Start of the Test Step 3", tags);
+		rpl.endStep(Status.SKIPPED);
+
+		rpl.StartStep("TestStep 4", "Start of the Test Step 4", tags);
+		rpl.endStep(Status.PASSED);
+
+		// Execute After Test before ending the Test case object
+		rpl.StartAfterTest("AfterTest", "Unit After Test Test Execution");
+		rpl.endAfterTest(Status.PASSED);
+
+		// End Test Case
+		rpl.endTest(Status.FAILED);
+
+		// Execute BeforeTestSuite before test suite is ended
+		rpl.StartAfterSuite("AfterTestSuite", "Unit After Test Suite");
+		rpl.endAfterSuite(Status.PASSED);
+
+		rpl.endSuite();
+
+		rpl.endLaunch();
+
+	}
+}
 ```

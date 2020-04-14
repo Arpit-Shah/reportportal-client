@@ -40,6 +40,7 @@ public class ReportPortalLauncher {
 	private Maybe<String> SuiteUUID;
 	private Maybe<String> testUUID;
 	private Maybe<String> stepUUID;
+	private Maybe<String> childStepUUID;
 	private Maybe<String> itemid;
 	String testSuiteName;
 	public Set<String> Tags;
@@ -237,12 +238,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Suite Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
 	 * @return = UUID of created item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartBeforeSuite(String Name, String Description) {
-		StartBeforeSuiteUUID = startItem("BEFORE_SUITE", Name, Description);
+	public Maybe<String> StartBeforeSuite(String name, String description) {
+		StartBeforeSuiteUUID = startItem("BEFORE_SUITE", name, description, false);
 		return StartBeforeSuiteUUID;
 	}
 
@@ -288,12 +289,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Suite Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
 	 * @return = UUID of created item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartAfterSuite(String Name, String Description) {
-		StartAfterSuiteUUID = startItem("AFTER_SUITE", Name, Description);
+	public Maybe<String> StartAfterSuite(String name, String description) {
+		StartAfterSuiteUUID = startItem("AFTER_SUITE", name, description, false);
 		return StartAfterSuiteUUID;
 	}
 
@@ -339,12 +340,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartBeforeTest(String Name, String Description) {
-		StartBeforeTestUUID = startItem("BEFORE_TEST", Name, Description);
+	public Maybe<String> StartBeforeTest(String name, String description) {
+		StartBeforeTestUUID = startItem("BEFORE_TEST", name, description, false);
 		return StartBeforeTestUUID;
 	}
 
@@ -390,12 +391,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartAfterTest(String Name, String Description) {
-		StartAfterTestUUID = startItem("AFTER_TEST", Name, Description);
+	public Maybe<String> StartAfterTest(String name, String description) {
+		StartAfterTestUUID = startItem("AFTER_TEST", name, description, false);
 		return StartAfterTestUUID;
 	}
 
@@ -441,12 +442,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Method Name
-	 * @param Description = Suite Description
+	 * @param name        = Method Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartBeforeMethod(String Name, String Description) {
-		StartBeforeMethodUUID = startItem("BEFORE_METHOD", Name, Description);
+	public Maybe<String> StartBeforeMethod(String name, String description) {
+		StartBeforeMethodUUID = startItem("BEFORE_METHOD", name, description, false);
 		return StartBeforeMethodUUID;
 	}
 
@@ -492,12 +493,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Method Name
-	 * @param Description = Suite Description
+	 * @param name        = Method Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartAfterMethod(String Name, String Description) {
-		StartAfterMethodUUID = startItem("AFTER_METHOD", Name, Description);
+	public Maybe<String> StartAfterMethod(String name, String description) {
+		StartAfterMethodUUID = startItem("AFTER_METHOD", name, description, false);
 		return StartAfterMethodUUID;
 	}
 
@@ -543,12 +544,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Suite Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartSuite(String Name, String Description) {
-		SuiteUUID = startItem("SUITE", Name, Description);
+	public Maybe<String> StartSuite(String name, String description) {
+		SuiteUUID = startItem("SUITE", name, description, false);
 		return SuiteUUID;
 	}
 
@@ -592,7 +593,7 @@ public class ReportPortalLauncher {
 	// START TEST
 	// ********************************************
 	/**
-	 * Start Test Suite
+	 * Start Test
 	 * 
 	 * <PRE>
 	 * REQUEST
@@ -610,12 +611,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Suite Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartTest(String Name, String Description) {
-		testUUID = startItem("TEST", Name, Description);
+	public Maybe<String> StartTest(String name, String description) {
+		testUUID = startItem("TEST", name, description, false);
 		return testUUID;
 	}
 
@@ -643,7 +644,7 @@ public class ReportPortalLauncher {
 	// START STEP
 	// ********************************************
 	/**
-	 * Start Test Suite
+	 * Start Step
 	 * 
 	 * <PRE>
 	 * REQUEST
@@ -661,12 +662,12 @@ public class ReportPortalLauncher {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param Name        = Test Suite Name
-	 * @param Description = Suite Description
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
 	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
 	 */
-	public Maybe<String> StartStep(String Name, String Description) {
-		stepUUID = startItem("STEP", Name, Description);
+	public Maybe<String> StartStep(String name, String description) {
+		stepUUID = startItem("STEP", name, description, false);
 		return stepUUID;
 	}
 
@@ -698,6 +699,69 @@ public class ReportPortalLauncher {
 		launch.finishTestItem(stepUUID, ftep);
 	}
 
+	// ********************************************
+	// START CHILD STEP
+	// ********************************************
+	/**
+	 * Start Child Step
+	 * 
+	 * <PRE>
+	 * REQUEST
+	 * {
+	 *  "name": "Services",
+	 *  "startTime": "1574423234000",
+	 *  "type": "step",
+	 *  "launchUuid": "96d1bc02-6a3f-451e-b706-719149d51ce4",
+	 *  "description": "Services tests"
+	 * }
+	 * 
+	 * RESPONSE
+	 * {
+	 *  "id": "1e183148-c79f-493a-a615-2c9a888cb441"
+	 * }
+	 * </PRE>
+	 * 
+	 * @param name        = Test Suite Name
+	 * @param description = Suite Description
+	 * @return = UUID of created Item (Example:1e183148-c79f-493a-a615-2c9a888cb441)
+	 */
+	public Maybe<String> StartChildStep(String name, String description) {
+		childStepUUID = startItem("STEP", name, description, true);
+		return childStepUUID;
+	}
+
+	// ********************************************
+	// END CHILD STEP
+	// ********************************************
+	/**
+	 * End Child Step
+	 * 
+	 * <PRE>
+	 * {
+	 *  "endTime": "1574423247000",
+	 *  "launchUuid": "96d1bc02-6a3f-451e-b706-719149d51ce4"
+	 * }
+	 * </PRE>
+	 * 
+	 * @param status = Result Status
+	 */
+	public void endChildStep(Status status) {
+		printUUID(childStepUUID, "Ending childStepUUID");
+		endItem(childStepUUID, status);
+	}
+
+	public void endChildStep(String description, Status status) {
+		FinishTestItemRQ ftep = new FinishTestItemRQ();
+		ftep.setEndTime(Calendar.getInstance().getTime());
+		ftep.setStatus(ConvertSStatus(status));
+		ftep.setDescription(description);
+		launch.finishTestItem(childStepUUID, ftep);
+	}
+
+	// ********************************************
+	// Log
+	// ********************************************
+
 	/**
 	 * Log lines can only be added for active component. For Example: If Test has
 	 * steps inside then logs can only be added to the steps, If Test does not have
@@ -719,9 +783,13 @@ public class ReportPortalLauncher {
 	 * @param message   = Log Message
 	 * @param f         = log file
 	 */
-	public void log(String message, LogStatus status, File f) {
-		ReportPortal.emitLog(message, ConvertStatus(status), Calendar.getInstance().getTime(), f);
+	public void log(String message, LogStatus logStatus, File f) {
+		ReportPortal.emitLog(message, ConvertStatus(logStatus), Calendar.getInstance().getTime(), f);
 	}
+
+	// ********************************************
+	// Restart Launch
+	// ********************************************
 
 	public Maybe<String> ReStartLaunch(Maybe<String> elid) {
 		launch = reportPortalObj.withLaunch(elid);
@@ -753,15 +821,16 @@ public class ReportPortalLauncher {
 	 *                    SCENARIO, STEP, BEFORE_CLASS, BEFORE_GROUPS," +
 	 *                    "BEFORE_METHOD, BEFORE_SUITE, BEFORE_TEST, AFTER_CLASS,
 	 *                    AFTER_GROUPS, AFTER_METHOD, AFTER_SUITE, AFTER_TEST")
-	 * @param Name        = Name of the item
-	 * @param Description = Description of the item
+	 * @param name        = Name of the item
+	 * @param description = Description of the item
+	 * @param child       = If child step then true otherwise false
 	 * @return = Item UUID
 	 */
-	public Maybe<String> startItem(String item, String Name, String Description) {
+	public Maybe<String> startItem(String item, String name, String description, boolean child) {
 
 		StartTestItemRQ st = new StartTestItemRQ();
-		st.setDescription(Description);
-		st.setName(Name);
+		st.setDescription(description);
+		st.setName(name);
 		st.setStartTime(Calendar.getInstance().getTime());
 		st.setRetry(false);
 		st.setType(item);
@@ -778,7 +847,11 @@ public class ReportPortalLauncher {
 		} else if ("TEST".equals(item)) {
 			itemid = launch.startTestItem(SuiteUUID, st);
 		} else if ("STEP".equals(item)) {
-			itemid = launch.startTestItem(testUUID, st);
+			if (child) {
+				itemid = launch.startTestItem(stepUUID, st);
+			} else {
+				itemid = launch.startTestItem(testUUID, st);
+			}
 		} else if ("BEFORE_TEST".equals(item)) {
 			itemid = launch.startTestItem(testUUID, st);
 		} else if ("AFTER_TEST".equals(item)) {

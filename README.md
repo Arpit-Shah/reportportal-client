@@ -20,61 +20,566 @@
 public class Test {
 
 	public static void main(String[] args) {
-		ReportPortalLauncher rl = new ReportPortalLauncher();
+		ReportPortalLauncher rpl = new ReportPortalLauncher();
 
 		// Launch is mandatory
-		rl.StartLaunch();
+		rpl.StartLaunch();
 
 		// Test Suite can have only one instance per run
-		rl.StartSuite("TestSuite", "Start of the Test Suite");
+		rpl.StartSuite("TestSuite", "Start of the Test Suite");
 
 		// Execute BeforeTestSuite once test suite is constructed
-		rl.StartBeforeSuite("BeforeTestSuite", "Unit Before Test Suite");
-		rl.endBeforeSuite(Status.PASSED);
+		rpl.StartBeforeSuite("BeforeTestSuite", "Unit Before Test Suite");
+		rpl.endBeforeSuite(Status.PASSED);
 
+		Set<String> tags = new HashSet<String>();
+		tags.add("Group1");
+		tags.add("Group2");
 		// Construct Test Case
-		rl.StartTest("TestStart", "Start of the Test Case");
+		rpl.StartTest("TestStart", "Start of the Test Case", tags);
 
 		// Execute Before Test once Test case object is constructed
-		rl.StartBeforeTest("BeforeTest", "Unit Before Test Test Execution");
-		rl.endBeforeTest(Status.PASSED);
+		rpl.StartBeforeTest("BeforeTest", "Unit Before Test Test Execution");
+		rpl.endBeforeTest(Status.PASSED);
 
-		rl.StartStep("TestStep 1", "Start of the Test Step 1");
+		rpl.StartStep("TestStep 1", "Start of the Test Step 1", tags);
 		// Execute BeforeMethod once Test Step object is constructed
-		rl.StartBeforeMethod("BeforeMethod", "Unit Before Test Test Execution");
+		rpl.StartBeforeMethod("BeforeMethod", "Unit Before Test Test Execution");
 		// log something
-		rl.log(LogStatus.Debug, "This is log line 1");
-		rl.log(LogStatus.Debug, "This is log line 2");
-		rl.endBeforeMethod(Status.PASSED);
+		rpl.log(LogStatus.Debug, "This is log line 1");
+		rpl.log(LogStatus.Debug, "This is log line 2");
+		rpl.endBeforeMethod(Status.PASSED);
 		// Execute AfterMethod before Test Step object is ended
-		rl.StartAfterMethod("AfterMethod", "Unit Before Test Test Execution");
-		rl.endAfterMethod(Status.PASSED);
-		rl.endStep(Status.PASSED);
+		rpl.StartAfterMethod("AfterMethod", "Unit Before Test Test Execution");
+		rpl.endAfterMethod(Status.PASSED);
+		rpl.endStep(Status.PASSED);
 
-		rl.StartStep("TestStep 2", "Start of the Test Step 2");
-		rl.endStep(Status.FAILED);
+		rpl.StartStep("TestStep 2", "Start of the Test Step 2", tags);
+		rpl.endStep(Status.FAILED);
 
-		rl.StartStep("TestStep 3", "Start of the Test Step 3");
-		rl.endStep(Status.SKIPPED);
+		rpl.StartStep("TestStep 3", "Start of the Test Step 3", tags);
+		rpl.endStep(Status.SKIPPED);
 
-		rl.StartStep("TestStep 4", "Start of the Test Step 4");
-		rl.endStep(Status.PASSED);
+		rpl.StartStep("TestStep 4", "Start of the Test Step 4", tags);
+		rpl.endStep(Status.PASSED);
 
 		// Execute After Test before ending the Test case object
-		rl.StartAfterTest("AfterTest", "Unit After Test Test Execution");
-		rl.endAfterTest(Status.PASSED);
+		rpl.StartAfterTest("AfterTest", "Unit After Test Test Execution");
+		rpl.endAfterTest(Status.PASSED);
 
 		// End Test Case
-		rl.endTest(Status.FAILED);
+		rpl.endTest(Status.FAILED);
 
 		// Execute BeforeTestSuite before test suite is ended
-		rl.StartAfterSuite("AfterTestSuite", "Unit After Test Suite");
-		rl.endAfterSuite(Status.PASSED);
+		rpl.StartAfterSuite("AfterTestSuite", "Unit After Test Suite");
+		rpl.endAfterSuite(Status.PASSED);
 
-		rl.endSuite();
+		rpl.endSuite();
 
-		rl.endLaunch();
+		rpl.endLaunch();
 
 	}
 }
+```
+
+# Sample Report Portal Listener for Artos
+
+```java
+/*******************************************************************************
+ * Copyright (C) 2018-2019 Arpit Shah and Artos Contributors
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
+package listener;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.artos.framework.Enums.TestStatus;
+import com.artos.framework.infra.BDDScenario;
+import com.artos.framework.infra.BDDStep;
+import com.artos.framework.infra.TestContext;
+import com.artos.framework.infra.TestObjectWrapper;
+import com.artos.framework.infra.TestUnitObjectWrapper;
+import com.artos.interfaces.TestProgress;
+import com.google.common.base.Throwables;
+import com.theartos.ReportPortalLauncher;
+import com.theartos.ReportPortalLauncher.LogStatus;
+import com.theartos.ReportPortalLauncher.Status;
+
+public class ReportPortalListener4 implements TestProgress {
+
+	TestContext context;
+	ReportPortalLauncher rpl;
+	boolean activeTest = false;
+	boolean activeChildUnit = false;
+	processTestCase ptc;
+
+	public ReportPortalListener4() {
+
+	}
+
+	public ReportPortalListener4(TestContext context) {
+		this.context = context;
+	}
+
+	@Override
+	public void testSuiteExecutionStarted(String description) {
+		rpl = new ReportPortalLauncher();
+		rpl.StartLaunch();
+		rpl.StartSuite("TestSuite", "SuiteName");
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void testSuiteExecutionFinished(String description) {
+		rpl.endSuite();
+		rpl.endLaunch();
+
+		// Give some time for API to finish its communication
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void testCaseExecutionStarted(TestObjectWrapper t) {
+		Set<String> tags = new HashSet<String>();
+		for (String s : t.getGroupList()) {
+			tags.add(s);
+		}
+		// Start next test
+		rpl.StartTest(t.getTestClassObject().getName(),
+				"".equals(t.getTestPlanDescription().trim()) ? t.getTestPlanDescription() : t.getTestPlanBDD(), tags);
+		activeTest = true;
+	}
+
+	@Override
+	public void testResult(TestObjectWrapper t, TestStatus testStatus, File snapshot, String description) {
+		if (testStatus == TestStatus.PASS || testStatus == TestStatus.KTF) {
+			rpl.endTest(Status.PASSED);
+		} else if (testStatus == TestStatus.SKIP) {
+			rpl.endTest(Status.SKIPPED);
+		} else if (testStatus == TestStatus.FAIL) {
+			rpl.endTest(Status.FAILED);
+		}
+	}
+
+	@Override
+	public void childTestUnitExecutionStarted(TestObjectWrapper t, TestUnitObjectWrapper unit, String paramInfo) {
+		Set<String> tags = new HashSet<String>();
+		for (String s : unit.getGroupList()) {
+			tags.add(s);
+		}
+		rpl.StartStep(paramInfo, unit.getTestUnitMethod().getName(), tags);
+		activeChildUnit = true;
+	}
+
+	@Override
+	public void testUnitExecutionStarted(TestUnitObjectWrapper unit) {
+		if (!activeChildUnit) {
+			Set<String> tags = new HashSet<String>();
+			for (String s : unit.getGroupList()) {
+				tags.add(s);
+			}
+			rpl.StartStep(unit.getTestUnitMethod().getName(),
+					"".equals(unit.getTestPlanDescription().trim()) ? unit.getTestPlanBDD()
+							: unit.getTestPlanDescription(),
+					tags);
+		}
+	}
+
+	@Override
+	public void testUnitResult(TestUnitObjectWrapper unit, TestStatus testStatus, File snapshot, String description) {
+		if (testStatus == TestStatus.PASS || testStatus == TestStatus.KTF) {
+			rpl.endStep(Status.PASSED);
+		} else if (testStatus == TestStatus.SKIP) {
+			rpl.endStep(Status.SKIPPED);
+		} else if (testStatus == TestStatus.FAIL) {
+			rpl.endStep(Status.FAILED);
+		}
+		activeChildUnit = false;
+	}
+
+	@Override
+	public void testCaseStatusUpdate(TestStatus testStatus, File snapshot, String msg) {
+		if (snapshot == null) {
+			rpl.log(LogStatus.Info, msg);
+		} else {
+			rpl.log(LogStatus.Info, msg, snapshot);
+		}
+	}
+
+	@Override
+	public void testException(Throwable e) {
+		rpl.log(LogStatus.Error, Throwables.getStackTraceAsString(e));
+	}
+
+	@Override
+	public void unitException(Throwable e) {
+		rpl.log(LogStatus.Error, Throwables.getStackTraceAsString(e));
+	}
+
+	@Override
+	public void childTestUnitExecutionFinished(TestUnitObjectWrapper unit) {
+
+	}
+
+	@Override
+	public void testUnitExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestCaseExecutionStarted(TestObjectWrapper t, String paramInfo) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestCaseExecutionFinished(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCaseSummaryPrinting(String FQCN, String description) {
+
+	}
+
+	@Override
+	public void testUnitSummaryPrinting(String FQCN, String description) {
+
+	}
+
+	@Override
+	public void testSuiteSummaryPrinting(String description) {
+
+	}
+
+	@Override
+	public void testExecutionLoopCount(int count) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void beforeTestSuiteMethodExecutionStarted(String methodName, String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void beforeTestSuiteMethodExecutionFinished(String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterTestSuiteMethodExecutionStarted(String methodName, String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void afterTestSuiteMethodExecutionFinished(String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void printTestPlan(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void printTestPlan(BDDScenario sc) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void printTestUnitPlan(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void printTestUnitPlan(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestUnitMethodExecutionStarted(String methodName, TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestUnitMethodExecutionStarted(String methodName, BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestUnitMethodExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestUnitMethodExecutionFinished(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestUnitMethodExecutionStarted(String methodName, TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestUnitMethodExecutionStarted(String methodName, BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterFailedUnitMethodExecutionStarted(String methodName, TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterFailedUnitMethodExecutionStarted(String methodName, BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestUnitMethodExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestUnitMethodExecutionFinished(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterFailedUnitMethodExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterFailedUnitMethodExecutionFinished(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localBeforeTestUnitMethodExecutionStarted(TestObjectWrapper t, TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localBeforeTestUnitMethodExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localAfterTestUnitMethodExecutionStarted(TestObjectWrapper t, TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localAfterTestUnitMethodExecutionFinished(TestUnitObjectWrapper unit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestCaseMethodExecutionStarted(String methodName, TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestCaseMethodExecutionStarted(String methodName, BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestCaseMethodExecutionFinished(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalBeforeTestCaseMethodExecutionFinished(BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestCaseMethodExecutionStarted(String methodName, TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestCaseMethodExecutionStarted(String methodName, BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestCaseMethodExecutionFinished(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void globalAfterTestCaseMethodExecutionFinished(BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localBeforeTestCaseMethodExecutionStarted(String methodName, TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localBeforeTestCaseMethodExecutionFinished(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localAfterTestCaseMethodExecutionStarted(String methodName, TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void localAfterTestCaseMethodExecutionFinished(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCaseExecutionStarted(BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCaseExecutionFinished(BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testUnitExecutionStarted(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testUnitExecutionFinished(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCaseExecutionSkipped(TestObjectWrapper t) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestCaseExecutionStarted(BDDScenario scenario, String paramInfo) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestCaseExecutionFinished(BDDScenario scenario) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestUnitExecutionStarted(BDDScenario scenario, BDDStep step, String paramInfo) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void childTestUnitExecutionFinished(BDDStep step) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testResult(BDDScenario scenario, TestStatus testStatus, File snapshot, String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCaseExecutionFinished(TestObjectWrapper t) {
+
+	}
+
+	@Override
+	public void testSuiteFailureHighlight(String description) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testSuiteException(Throwable e) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+
 ```

@@ -97,7 +97,21 @@ public class ReportPortalListener implements TestProgress {
 	public void testSuiteExecutionStarted(String description) {
 		rpl = new ReportPortalLauncher();
 		rpl.StartLaunch();
-		rpl.StartSuite("TestSuite", "SuiteName");
+
+		String TestSuiteName = "TestSuite"; // Default value
+
+		// Find Test Suite Name
+		if (null != description) {
+			String[] desc = description.split("\\.");
+			int descLength = desc.length;
+			if (descLength > 2) {
+				TestSuiteName = desc[descLength - 2];
+			} else {
+				TestSuiteName = description;
+			}
+		}
+
+		rpl.StartSuite(TestSuiteName, description);
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
@@ -126,7 +140,7 @@ public class ReportPortalListener implements TestProgress {
 		}
 		// Start next test
 		rpl.StartTest(t.getTestClassObject().getName(),
-				"".equals(t.getTestPlanDescription().trim()) ? t.getTestPlanDescription() : t.getTestPlanBDD(), tags);
+				"".equals(t.getTestPlanDescription().trim()) ? t.getTestPlanBDD() : t.getTestPlanDescription(), tags);
 		activeTest = true;
 	}
 
@@ -147,7 +161,8 @@ public class ReportPortalListener implements TestProgress {
 		for (String s : unit.getGroupList()) {
 			tags.add(s);
 		}
-		rpl.StartStep(paramInfo, unit.getTestUnitMethod().getName(), tags);
+		rpl.StartStep(unit.getTestUnitMethod().getName() + " " + paramInfo,
+				"".equals(unit.getTestPlanDescription()) ? unit.getTestPlanBDD() : unit.getTestPlanDescription(), tags);
 		activeChildUnit = true;
 	}
 
@@ -532,8 +547,8 @@ public class ReportPortalListener implements TestProgress {
 		// TODO Auto-generated method stub
 
 	}
-
 }
+
 
 ```
 

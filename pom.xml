@@ -256,69 +256,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- This plugin will copy resources (images) from com.artos.icons location 
-				to build target directory at class processing phase, so it will be packages 
-				in jar at correct location. Because we are using non standard resource directory, 
-				this has to be done. same way plugin will inject template and version file 
-				into compiled jar. When version file is processed, the variables will be 
-				replaced with project values -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/classes/com/artos/icons</outputDirectory>   <!-- output directory -->
-							<resources>
-								<resource>
-									<directory>${basedir}/src/com/artos/icons</directory>         <!-- source directory -->
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-resources-2</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/classes/com/artos/template</outputDirectory>   <!-- output directory -->
-							<resources>
-								<resource>
-									<directory>${basedir}/src/com/artos/template</directory>         <!-- source directory -->
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<!-- Following will update version.properites file with build number 
-						and time stamp -->
-					<execution>
-						<id>copy-resources-3</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/classes/com/artos/version</outputDirectory>   <!-- output directory -->
-							<resources>
-								<resource>
-									<directory>${basedir}/src/com/artos/version</directory>         <!-- source directory -->
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 </project>

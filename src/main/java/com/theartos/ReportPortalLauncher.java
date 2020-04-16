@@ -26,9 +26,10 @@ public class ReportPortalLauncher {
 
 	public String projectName = "";
 	public String releaseName = "";
-
 	private String uUID;
 	private String baseURL;
+	private String testSuiteName;
+	
 	private ReportPortal reportPortalObj = null;
 	private Maybe<String> launchUUID;
 	private Maybe<String> StartBeforeSuiteUUID;
@@ -42,11 +43,6 @@ public class ReportPortalLauncher {
 	private Maybe<String> stepUUID;
 	private Maybe<String> childStepUUID;
 	private Maybe<String> itemid;
-	String testSuiteName;
-	public Set<String> Tags;
-	public Set<String> stepTags;
-	public Set<String> testTags;
-	public Set<String> suiteTags;
 	Launch launch;
 
 	private static Status oStatus;
@@ -159,9 +155,6 @@ public class ReportPortalLauncher {
 			// Do not allow re-run
 			params.setRerun(false);
 			params.setEnable(true);
-			if (Tags != null) {
-				params.setTags(Tags);
-			}
 		}
 
 		// Start launch request with given parameters
@@ -171,9 +164,6 @@ public class ReportPortalLauncher {
 			rq.setStartTime(Calendar.getInstance().getTime());
 			// Launch mode. Allowable values 'default' or 'debug'
 			rq.setMode(params.getLaunchRunningMode());
-			if (Tags != null) {
-				rq.setTags(params.getTags());
-			}
 			rq.setDescription(params.getDescription());
 			try {
 				reportPortalObj = ReportPortal.builder().withParameters(params).build();
@@ -887,14 +877,6 @@ public class ReportPortalLauncher {
 		return oLogStatus;
 	}
 
-	public Set<String> getTags() {
-		return this.Tags;
-	}
-
-	public void setTags(Set<String> s) {
-		this.Tags = s;
-	}
-
 	public Maybe<String> getStartBeforeSuiteUUID() {
 		StartBeforeSuiteUUID.subscribe(s -> System.out.print("StartBeforeSuiteUUID : " + s));
 		return StartBeforeSuiteUUID;
@@ -970,5 +952,41 @@ public class ReportPortalLauncher {
 //			System.out.println("Completed. No items.");
 //		});
 		return launchUUID;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getReleaseName() {
+		return releaseName;
+	}
+
+	public void setReleaseName(String releaseName) {
+		this.releaseName = releaseName;
+	}
+
+	public String getBaseURL() {
+		return baseURL;
+	}
+
+	public void setBaseURL(String baseURL) {
+		this.baseURL = baseURL;
+	}
+
+	public String getTestSuiteName() {
+		return testSuiteName;
+	}
+
+	public void setTestSuiteName(String testSuiteName) {
+		this.testSuiteName = testSuiteName;
+	}
+
+	public void setuUID(String uUID) {
+		this.uUID = uUID;
 	}
 }

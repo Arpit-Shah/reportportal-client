@@ -6,7 +6,7 @@ This project is distributed under MIT License. Please read "LICENSE.md" file for
 reportportal-client provides an API that can be used by anyone who would like to integrate with "https://reportportal.io/". 
 It currently supports all methods required to support "https://www.theartos.com/" integration but it can be further extended to support other frameworks if requested. 
 
-# Recommended Artos version is 0.0.13 or above
+# Release History
 | Release     |Download Link   	                                                                             |                                           
 |-------------|:--------------------------------------------------------------------------------------------:|
 | 0.0.1      |[reportportal-client-0.0.1.jar](https://repo1.maven.org/maven2/com/theartos/reportportal-client/0.0.1/reportportal-client-0.0.1.jar) | 

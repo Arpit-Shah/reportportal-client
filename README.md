@@ -1,12 +1,31 @@
-# HOW TO USE ReportPortal-Client for ARTOS project
+# README #
 
-Step 1 : Check out this project
+This project is distributed under MIT License. Please read "LICENSE.md" file for more details.
 
-Step 2 : Using maven -install command, build project into jar file. Once produce you will see "reportportal-client-0.0.1-SNAPSHOT.jar" is created in ./target directory of the project
+# Report Portal Client
+reportportal-client provides an API that can be used by anyone who would like to integrate with "https://reportportal.io/". 
+It currently supports all methods required to support "https://www.theartos.com/" integration but it can be further extended to support other frameworks if requested. 
 
-Step 3 : Copy "reportportal-client-0.0.1-SNAPSHOT.jar" into lib directory of Artos test project
+# Recommended Artos version is 0.0.13 or above
+| Release     |Download Link   	                                                                             |                                           
+|-------------|:--------------------------------------------------------------------------------------------:|
+| 0.0.1      |[reportportal-client-0.0.1.jar](https://repo1.maven.org/maven2/com/theartos/reportportal-client/0.0.1/reportportal-client-0.0.1.jar) | 
 
-Step 4 : Add jar to your build path. If you are using maven project then add following to your POM.xml file. 
+
+# Recommended Artos version is 0.0.13 or above
+| Release     |Download Link   	                                                                             |                                           
+|-------------|:--------------------------------------------------------------------------------------------:|
+| 0.0.13      |[artos-0.0.13.jar](https://repo1.maven.org/maven2/com/theartos/artos/0.0.13/artos-0.0.13.jar) | 
+
+# How to setup ReportPortal-Client for ARTOS project
+
+Step 1 : Ensure you are using Artos version 0.0.13 or above. 
+
+Step 2 : Add report portal client to build path
+
+* If you have simple java project then go to https://mvnrepository.com/artifact/com.theartos/reportportal-client and download the latest Jar. Add jar to project build path. 
+
+* If you have maven project then copy Maven dependency from the https://mvnrepository.com/artifact/com.theartos/reportportal-client and add to your POM file
 
 ```xml
 <dependency>
@@ -17,8 +36,11 @@ Step 4 : Add jar to your build path. If you are using maven project then add fol
             <systemPath>${project.basedir}/lib/reportportal-client-0.0.1-SNAPSHOT.jar</systemPath>
 </dependency>
 ```
+Step 3 : Update Maven Project to ensure added Jars are downloaded
 
-Step 5 : Create "reportportal_configuration.xml" file to project ./conf/ directory. Add following info into xml file and update to match your Report Portal configuration. 
+Step 4 : Create "reportportal_configuration.xml" file to project root directory ```./conf/```. 
+
+Step 5 : Add following info into "reportportal_configuration.xml" file and update the information to match your Report Portal configuration. 
 
 ```xml
 
@@ -68,7 +90,6 @@ import java.util.Set;
 import com.artos.framework.Enums.TestStatus;
 import com.artos.framework.infra.BDDScenario;
 import com.artos.framework.infra.BDDStep;
-import com.artos.framework.infra.TestContext;
 import com.artos.framework.infra.TestObjectWrapper;
 import com.artos.framework.infra.TestUnitObjectWrapper;
 import com.artos.interfaces.TestProgress;
@@ -79,18 +100,12 @@ import com.theartos.ReportPortalLauncher.Status;
 
 public class ReportPortalListener implements TestProgress {
 
-	TestContext context;
 	ReportPortalLauncher rpl;
 	boolean activeTest = false;
 	boolean activeChildUnit = false;
-	processTestCase ptc;
 
 	public ReportPortalListener() {
 
-	}
-
-	public ReportPortalListener(TestContext context) {
-		this.context = context;
 	}
 
 	@Override
@@ -547,8 +562,8 @@ public class ReportPortalListener implements TestProgress {
 		// TODO Auto-generated method stub
 
 	}
-}
 
+}
 
 ```
 
@@ -560,9 +575,6 @@ Step 7 : Register listener via FeatureRunner Class
 		List<Class<?>> listners = Lists.newArrayList(ReportPortalListener.class);
 		Runner runner = new Runner(FeatureRunner.class, listners);
 		runner.setTestList(getTestList());
-		runner.setLoopCount(1);
-		runner.setTestGroupList(Lists.newArrayList("FAST", "SLOW"));
-		runner.setTestUnitGroupList(Lists.newArrayList("GOODPATH", "BADPATH"));
 		runner.run(args);
 	}
 	

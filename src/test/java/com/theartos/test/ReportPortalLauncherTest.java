@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2018-2019 Arpit Shah and Artos Contributors
+ * Copyright (C) 2018-2020 Arpit Shah and Artos Contributors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,29 +63,29 @@ class ReportPortalLauncherTest {
 	@Test
 	void testSetGetUUID() {
 		ReportPortalLauncher rpl = new ReportPortalLauncher();
-		rpl.setBaseURL("XYZ");
-		assertEquals("XYZ", rpl.getBaseURL());
+		rpl.setuUID("XYZ");
+		assertEquals("XYZ", rpl.getuUID());
 	}
 
 	@Test
 	void testSetGetReleaseName() {
 		ReportPortalLauncher rpl = new ReportPortalLauncher();
-		rpl.setBaseURL("RELEASE_1");
-		assertEquals("RELEASE_1", rpl.getBaseURL());
+		rpl.setReleaseName("RELEASE_1");
+		assertEquals("RELEASE_1", rpl.getReleaseName());
 	}
 
 	@Test
 	void testSetGetTestSuiteName() {
 		ReportPortalLauncher rpl = new ReportPortalLauncher();
-		rpl.setBaseURL("TEST_SUITE_X");
-		assertEquals("TEST_SUITE_X", rpl.getBaseURL());
+		rpl.setTestSuiteName("TEST_SUITE_X");
+		assertEquals("TEST_SUITE_X", rpl.getTestSuiteName());
 	}
 
 	@Test
 	void testSetGetProjectName() {
 		ReportPortalLauncher rpl = new ReportPortalLauncher();
-		rpl.setBaseURL("PROJECT-X");
-		assertEquals("PROJECT-X", rpl.getBaseURL());
+		rpl.setProjectName("PROJECT-X");
+		assertEquals("PROJECT-X", rpl.getProjectName());
 	}
 
 	@Test

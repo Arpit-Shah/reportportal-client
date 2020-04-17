@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2018-2019 Arpit Shah and Artos Contributors
+ * Copyright (C) 2018-2020 Arpit Shah and Artos Contributors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,8 @@ import org.w3c.dom.NodeList;
  */
 public class ReportPortalConfigParser {
 
-	public static final String CONFIG_BASE_DIR = "." + File.separator + "conf" + File.separator;
-	final File fXmlFile = new File(CONFIG_BASE_DIR + "reportportal_configuration.xml");
+	private static String CONFIG_BASE_DIR = "." + File.separator + "conf" + File.separator;
+	private File fXmlFile = new File(CONFIG_BASE_DIR + "reportportal_configuration.xml");
 
 	// Default Values
 	private String Project_Name = "RPT_PRJ_1";
@@ -71,7 +71,7 @@ public class ReportPortalConfigParser {
 	 * @param createIfNotPresent enables creation of default configuration file if
 	 *                           not present
 	 */
-	public void readXMLConfig(boolean createIfNotPresent) {
+	private void readXMLConfig(boolean createIfNotPresent) {
 
 		try {
 			if (!fXmlFile.exists() || !fXmlFile.isFile()) {
@@ -274,7 +274,11 @@ public class ReportPortalConfigParser {
 		UUID = uUID;
 	}
 
-	public static String getConfigBaseDir() {
+	public String getConfigBaseDir() {
 		return CONFIG_BASE_DIR;
+	}
+
+	public File getfXmlFile() {
+		return fXmlFile;
 	}
 }

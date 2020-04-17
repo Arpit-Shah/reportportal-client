@@ -18,7 +18,7 @@ class ReportPortalConfigParserTest {
 		assertEquals("01.02.0002", rpcp.getRelease_Name());
 		assertEquals("http://58.22.3.239:8080", rpcp.getBase_URL());
 		assertEquals("0acb493c-37d2-4afc-a029-3c7aad01fb78", rpcp.getUUID());
-		assertEquals(".\\conf\\", rpcp.getConfigBaseDir());
+		assertEquals("." + File.separator + "conf" + File.separator, rpcp.getConfigBaseDir());
 	}
 
 	@Test
